@@ -1,0 +1,157 @@
+
+
+
+
+
+
+
+
+
+
+
+
+Class Sanskrit token
+attribute reader colon text comma colon flags
+Define initialize with arguments text comma expand flags out
+member text equals text
+if flags dot Count is equal to 1 and flags within 0 out dot is A question-mark with arguments Sanskrit set out
+member flags equals flags within 0 out
+else
+member flags equals Sanskrit set dot new with arguments flags out
+finish
+finish
+define add flags from with arguments token out
+token dot flags dot each do with inputs flag at 1 out
+set flag followed by flag at 1
+finish
+finish
+
+(95 words)
+
+
+
+class Token
+  attr_reader :text, :flags
+  
+  # Initialize with both text and flags
+  def initialize(text, *flags)
+    @text = text
+    if flags.count == 1 && flags[0].is_a?(Set)
+      @flags = flags[0]
+    else
+      @flags = Set.new(flags)
+    end
+  end
+  
+  # Append the flags from the given token.
+  def add_flags_from(token)
+    token.flags.each do |f|
+      set_flag f
+    end
+  end
+
+0'45" typed
+
+
+Class Sanskrit token
+attribute reader: text,: flags
+define initialize with arguments text, expand flags out
+member text equals text
+if flags.count is equal to 1 and flags within 0 out.is A? With arguments Sanskrit set out
+member flags equals flags within 0 out
+else
+member flags equals Sanskrit set.new with arguments flags out
+finish
+finish
+define add flags from with arguments token out
+token.flags.each do with inputs flag at 1 out
+set flag followed by flag at one
+finish
+finish line
+
+1'54", 2'03", 2'11"  spoken  = 74 tokens
+
+
+
+
+class _ Token
+alpha tango tango romeo underscore reader _ colon text comma _ colon flags
+delta echo foxtrot _ initialize open-paren text comma _ asterisk flags close-paren
+at-sign text _ equals-sign _ text
+if _ flags dot count _ equals-sign equals-sign _ one _ ampersand ampersand _ flags open-bracket zero close-bracket dot india sierra underscore alpha question-mark open-paren cap set close-paren
+at-sign flags _ equals-sign _ flags open-bracket zero close-bracket
+else
+at-sign flags _ equals-sign _ cap set dot new open-paren flags close-paren
+echo november delta
+echo november delta
+delta echo foxtrot _ add underscore flags underscore from open-paren token close-paren
+token dot flags dot each _ do _ vertical-bar foxtrot vertical-bar
+set underscore flag _ f
+echo november delta
+echo november delta
+
+(124 words)
+
+2'33", 2'29"  spoken
+
+74 tokens (ruby) 
+	typed = 45 seconds				(0.61 sec/token)
+	spoken = 114~131 seconds		(1.54~1.77 sec/token)
+	naive = 149~153 seconds			(2.01~2.06 sec/token)
+	
+115 tokens (C++)
+	typed = 95 seconds				(0.82 sec/token)
+	spoken = 194 seconds			(1.68 sec/token)
+	naive = 380 seconds				(3.30 sec/token)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

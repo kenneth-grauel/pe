@@ -1,0 +1,24 @@
+(number) with exponent (number)
+hex literal (term)+
+binary literal (term)
+octal literal (term)
+character literal (term)
+
+singapore		[wordindex]
+hades			[word_index]
+sahara			[wordIndex]
+sanskrit		[WordIndex]
+sydney			[WORDINDEX]
+byzantine		[WORD_INDEX]
+member			[@]
+static			[@@]
+global			[$]
+
+identifier (term)
+upper (term)
+(string) at (number)
+(identifier) followed by (identifier)
+
+
+
+
