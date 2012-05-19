@@ -33,18 +33,19 @@ module SpeechProcessor
   # class changes. If include_whitespace is false, the resulting array will
   # contain no tokens from character class :whitespace.
   # Return type: [String]
-  def self.tokenize(text, include_whitespace)
+  def self.tokenize(text, include_whitespace, language_context)
     
     # Check for special patterns
-    
-    # Double-quoted string
-    match = /"([^\\"]|\\"|\\)*"/.match(text)
-    if match != nil
-      front, back = match.offset(0)
-      front_tokens = tokenize(text[0, front], include_whitespace)
-      back_tokens = tokenize(text[back, text.length - back], include_whitespace)
+    language_context.string_matchers.each do |pattern|
+      match = pattern.match(text)
+      if match != nil
+        front, back = match.offset(0)
+        front_tokens = tokenize(text[0, front], include_whitespace, language_context)
+        back_tokens = tokenize(text[back, text.length - back], include_whitespace,
+          language_context)
       
-      return front_tokens + [match[0]] + back_tokens
+        return front_tokens + [match[0]] + back_tokens
+      end
     end
     
     # Treat as a normal sequence of tokens
@@ -72,9 +73,11 @@ module SpeechProcessor
   # class changes. Attempts to make a 1st pass at setting the flags
   # correctly. Removes whitespace by default.
   # Return type: [Token]
-  def self.tokenize_and_flag(text, reserved_words = Set.new())
+  def self.tokenize_and_flag(text, language_context)
     tokens = []
-    tokenize(text, false).each do |literal_text|
+    reserved_words = language_context.rulebook.reserved_words()
+    
+    tokenize(text, false, language_context).each do |literal_text|
       
       token = Token.new(literal_text)
       if literal_text =~ /^[0-9.]+$/
@@ -152,7 +155,7 @@ module SpeechProcessor
   # I'm fairly certain this is going to have to change as the program
   # develops and matures.
   def self.convert_to_code(speech, language_context)
-    tokens = tokenize_and_flag(speech, language_context.rulebook.reserved_words())
+    tokens = tokenize_and_flag(speech, language_context)
     rulebooks_to_apply = [
       language_context.rulebook
     ]

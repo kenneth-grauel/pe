@@ -102,5 +102,11 @@ class RubyContext < LanguageContext
     add_rule SharedRules.get(:literal_concatenation)
   end
   
+  def string_matchers()
+    [/"([^\\"]|\\"|\\)*"/]
+  end
+  
+  
+  
   
 end

@@ -22,6 +22,10 @@ class LanguageContext
       add_rule rule
     end
   end
+  
+  def string_matchers()
+    []
+  end
 end
 
 
