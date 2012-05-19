@@ -1,7 +1,7 @@
 
 require "ripper"
 
-files = `ls src/*.rb `
+files = `find . | grep ".*\\.rb$"`
 files = files.split("\n")
 
 token_total = 0
@@ -23,7 +23,7 @@ files.each do |filename|
     token_total += t
     line_total += l
     byte_total += b
-    puts "  %-30s | %5d | %6d | %7d |" % [filename, l.to_s, t.to_s, b.to_s]
+    puts "  %-30s | %5d | %6d | %7d |" % [filename[2,filename.length-2], l.to_s, t.to_s, b.to_s]
   end
 end
 puts "---------------------------------+-------+--------+---------+-"

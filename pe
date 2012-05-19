@@ -3,7 +3,5 @@
 cd src
 ruby __RunTests.rb
 
-echo ""
-echo "-------------------------------------------------------"
-echo "(Line Counts)"
-wc *.rb
+cd ..
+ruby sc.rb
