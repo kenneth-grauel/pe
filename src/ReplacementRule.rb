@@ -3,24 +3,48 @@ require_relative "ReplacementMatch"
 require_relative "Rule"
 require_relative "Token"
 
-# Almost every rule will be of this class or a subclass thereof.
-# This class implements the standard pattern replacement technique:
-# Match a list of tokens as strings or regexps in the input
-# and replace them with output generated from the matches.
-# Basically a large pattern substitution.
+# ReplacementRules operate by lining up a pattern consisting of one or more
+# Strings or Regexps to a list of Tokens. The result of this operation is
+# an array of ReplacementMatches.
+#
+# The standard idiom here is to first initialize a new ReplacementRule,
+# then call rule.require() for each String or Regexp in the pattern,
+# and finally call rule.output_function() once to define the translation
+# from pattern to result.
 # 
-# A ReplacementRule is defined by a pattern and a result.
-# The pattern is an array of token matchers, either strings or regexps.
+#   rule = ReplacementRule.new("test")
+#   rule.requires("word")
+#   rule.requires(/expr(ess|ion)/, literal: true, reserved: false)
+#   rule.has_output lambda { |word1, word2|
+#     [Token.new(word2.text), Token.new(word1.text)]
+#   }
+#
+# The above example would reverse any 2 tokens matching the pattern
+# "word expr(ess|ion)". For instance, "word express" would become
+# "express word".
 class ReplacementRule < Rule
   
-  attr_reader :pattern, :requirements, :output_function, :match_data
+  # The array of Strings and Regexps to match with.
+  attr_reader :pattern
   
+  # An array of flags requirements.
+  # Format is [[pattern index, symbol, true|false]]
+  #
+  # For instance, if the 2nd token must not be reserved,
+  # requirements might be [[1, :reserved, false]].
+  attr_reader :requirements
+  
+  # A lambda function taking as input an Array of ReplacementMatches
+  # and outputting an Array of Tokens. This is called upon a successful match
+  # to generate the Tokens which replace those originally matched.
+  attr_reader :output_function_lambda
+  
+  # Default constructor.
   def initialize(name)
     super(name)
     @pattern = []
     @requirements = []
-    @output_function = nil
-    @match_data = nil
+    @output_function_lambda = nil
   end
   
   # Adds a single token to the input pattern.
@@ -44,10 +68,14 @@ class ReplacementRule < Rule
     self
   end
   
-  def has_output(output_function)
-    @output_function = output_function
+  # Sets output_function. See the member output_function for details.
+  def has_output(output_function_lambda)
+    @output_function_lambda = output_function_lambda
   end
   
+  # Return the Set of alphabet-only String elements in the pattern.
+  # More or less, this corresponds to the set of reserved words which are
+  # processed as potentially something more than identifiers.
   def reserved_words()
     result = Set.new() 
     @pattern.each do |token_matcher|
@@ -61,48 +89,54 @@ class ReplacementRule < Rule
   # Tries to match our pattern against a certain set of input tokens
   # at the given starting index. Assumes that a sufficient number of tokens
   # exists and does not check bounds.
-  # Returns true or false: was a match found?
-  # Side effect: sets @match_data in the following format:
-  #   [ReplacementMatch]
-  def matches?(tokens, begin_index)
-    @match_data = []
-    temp_match_data = []
+  #
+  # Returns Boolean: match found?, [ReplacementMatch]: the matches
+  def try_match(tokens, begin_index)
+    match_data = []
     
     @pattern.each_with_index do |rule, pattern_index|
       token = tokens[pattern_index + begin_index]
       
       # Check flags
       (@requirements.select {|r| r[0] == pattern_index}).each do |r|
-        return false if r[2] == true && !token.flagged?(r[1])
-        return false if r[2] == false && token.flagged?(r[1])
+        return false, nil if r[2] == true && !token.flagged?(r[1])
+        return false, nil if r[2] == false && token.flagged?(r[1])
       end
       
       # Check text of rule
       if rule.is_a?(String)
         if rule.casecmp(token.text) == 0
-          temp_match_data << ReplacementMatch.new(token)
+          match_data << ReplacementMatch.new(token)
         else
-          return false
+          return false, nil
         end
       elsif rule.is_a?(Regexp)
         data = rule.match(token.text)
         if data != nil
-          temp_match_data << ReplacementMatch.new(token, data.to_a.drop(1))
+          match_data << ReplacementMatch.new(token, data.to_a.drop(1))
         else
-          return false
+          return false, nil
         end
       end
     end
     
-    @match_data = temp_match_data
-    true
+    return true, match_data
   end
   
-  # This is defined separately so it may be overridden by derived classes
+  # Wraps the member @output_function_lambda so that it may be
+  # overwritten by derived classes which provide their own canned output
+  # functions.
+  #
+  # This implementation simply calls @output_function_lambda.
   def output_function(match_data)
-    return @output_function.call(*match_data)
+    return @output_function_lambda.call(*match_data)
   end
   
+  # Try to apply this ReplacementRule to the given Array of Tokens.
+  # 
+  # Returns replacement count, modified list of Tokens.  You may safely
+  # assume that if no replacements were made the replacement count will be 0
+  # and the modified list of Tokens will be unchanged from the original.
   def apply_to_tokens(tokens)
     begin_index = 0
     
@@ -112,9 +146,10 @@ class ReplacementRule < Rule
     original_tokens = tokens
     
     while begin_index <= tokens.count - @pattern.count
-      if matches?(tokens, begin_index)
+      is_match, match_data = try_match(tokens, begin_index)
+      if is_match
         # Apply rule
-        replace_with = output_function(@match_data)
+        replace_with = output_function(match_data)
         before = tokens[0, begin_index]
         after = tokens[begin_index + @pattern.count,
           tokens.count - begin_index - @pattern.count]

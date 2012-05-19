@@ -23,6 +23,8 @@ class Rule
     return 0, tokens
   end
   
+  # Return a Set of reserved words which this rule defines.
+  # At this point, it's just [].
   def reserved_words()
     Set.new()
   end
