@@ -33,7 +33,7 @@ module SharedRules
   
   
   register :identifier, ReplacementRule.new("identifier / literally")
-  rule.requires(/^identifier|literally$/)
+  rule.requires(/^identifier|literally$/, not_reserved: false)
   rule.requires(Patterns::ANYTHING)
   rule.has_output lambda { |identifier, content|
     flags = content.flags
@@ -220,7 +220,6 @@ module SharedRules
   rule.has_output lambda { |value, with, exponent, the_exponent|
     [Token.new(value.text + "e" + the_exponent.text, value.flags)]
   }
-  
   
   register :literal_concatenation, ReplacementRule.new("literal concatenation")
   rule.requires(Patterns::ANYTHING, literal: true)

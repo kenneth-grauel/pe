@@ -199,3 +199,30 @@ bound >= 0 && bound <= 100
 # Expressions (18)
 #: (1 inclusive range 100).includes? Of 50 out and (1 exclusive range 100).includes? Of 50 out
 (1..100).includes?(50) && (1...100).includes?(50)
+# Expressions (19)
+#: definition add rule with arguments rule, pointer the rest, address of block out
+def add_rule(rule, *the_rest, &block)
+# Expressions (20)
+#: {symbol literally identifier maps to 3}
+{ :identifier => 3 }
+# Expressions (21)
+#: binary not hex literal FF binary and  hex literal FF  binary or 0 binary XOR 0 is equal to 0
+~0xFF & 0xFF | 0 ^ 0 == 0
+# Expressions (22)
+#: else if condition or that condition or not the other condition
+elsif condition || that_condition || !the_other_condition
+# Expressions (23)
+#: Return true if member flags. Include? Of symbol unary out
+return true if @flags.include?(:unary)
+# Expressions (24)
+#: Result shift left if member player.X position at 123 is less than 0 then the empty string else suffix finish
+result << if @player.x_pos < 0 then "" else suffix end
+# Expressions (25)
+#: requires followed by incorrect word, literal symbol is true, reserved symbol is false
+requires incorrect_word, literal: true, reserved: false
+# Expressions (26)
+#:  token.set flag symbol numeric
+token.set_flag :numeric
+# Strings (1)
+#: register symbol identifier binary literal, Sanskrit flag rule.new of "binary literal", symbol binary, "0b" out
+register :binary_literal, FlagRule.new("binary literal", :binary, "0b")

@@ -36,6 +36,8 @@ class RubyContext < LanguageContext
       ["member", "@"],
       ["static", "@@"],
       ["global", "$"],
+      ["symbol is", ":", :hint_no_space_left, :hint_space_right],
+      ["symbol", ":"],
       ["plus equals", "+="],
       ["minus equals", "-="],
       ["times equals", "*="],
@@ -69,9 +71,9 @@ class RubyContext < LanguageContext
       ["with scope", "::"],
       ["with arguments", "("],
       ["definition", "def"],
-      ["pointer", "*"],
-      ["address of", "&"],
       ["maps to", "=>"],
+      ["pointer", "*", :hint_no_space_right],
+      ["address of", "&", :hint_no_space_right],
       ["binary not", "~"],
       ["binary and", "&"],
       ["binary or", "|"],
@@ -88,7 +90,7 @@ class RubyContext < LanguageContext
     ]
     
     conversions.each do |conversion|
-      add_rule KeywordRule.new(conversion[0], conversion[1])
+      add_rule KeywordRule.new(*conversion)
     end
     
     # Keywords
@@ -113,11 +115,11 @@ class RubyContext < LanguageContext
     [/"([^\\"]|\\"|\\)*"/]
   end
   
-  @@left_grouping_operators = ["(", "[", "{"]
-  @@right_grouping_operators = [")", "]", "}"]
+  @@left_grouping_operators = ["(", "["]
+  @@right_grouping_operators = [")", "]"]
   @@concatenating_operators = [".", "::", "..", "..."]
-  @@concatenating_on_left_operators = ["++", "--", ",", ";", ":"]
-  @@concatenating_on_right_operators = ["@", "@@", "$", ":", "!"]
+  @@concatenating_on_left_operators = ["++", "--", ",", ";"]
+  @@concatenating_on_right_operators = ["@", "@@", "$", ":", "!", "~"]
   
   # Should a space be inserted between the given Tokens?
   def should_space(left, right)
@@ -128,9 +130,14 @@ class RubyContext < LanguageContext
       @@concatenating_operators.include?(left.text),
       @@concatenating_operators.include?(right.text),
       @@concatenating_on_left_operators.include?(right.text),
-      @@concatenating_on_right_operators.include?(left.text)
+      @@concatenating_on_right_operators.include?(left.text),
+      left.flagged?(:hint_no_space_right),
+      right.flagged?(:hint_no_space_left)
     ]
     result = !concatenate_when.include?(true)
+    if left.flagged?(:hint_space_right) || right.flagged?(:hint_space_left)
+      result = true
+    end
     return result
   end
   

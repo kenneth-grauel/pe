@@ -49,6 +49,11 @@ class Token
     octal: "O",
     character: "c",
     
+    hint_space_left: "[",
+    hint_space_right: "]",
+    hint_no_space_left: "<",
+    hint_no_space_right: ">",
+    
     do_not_concatenate: "0",
     under_concatenate: "1",
     under_underscores: "2",

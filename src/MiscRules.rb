@@ -60,19 +60,24 @@ class KeywordRule < ReplacementRule
   # Replace spoken with code.
   # Spoken and code may both consist of multiple words separated by spaces.
   # In this case, multiple tokens will be matched or created (respectively).
-  def initialize(spoken, code)
+  def initialize(spoken, code, *additional_flags)
     super(spoken + " keyword")
     spoken.split.each do |word|
       requires word, literal: true
     end
     @code = code.split
+    @additional_flags = additional_flags
   end
   
   # Apply this rule to a given match_data.
   def output_function(match_data)
     output = []
     @code.each do |keyword|
-      output << Token.new(keyword, :reserved)
+      token = Token.new(keyword, :reserved)
+      @additional_flags.each do |flag|
+        token.set_flag flag
+      end
+      output << token
     end
     output
   end
