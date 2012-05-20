@@ -223,6 +223,9 @@ requires incorrect_word, literal: true, reserved: false
 # Expressions (26)
 #:  token.set flag symbol numeric
 token.set_flag :numeric
+# Expressions (27)
+#: URI equals credentials at index symbol URI done at index 0, 1 done
+uri = credentials[:uri][0, 1]
 # Strings (1)
 #: register symbol identifier binary literal, Sanskrit flag rule.new of "binary literal", symbol binary, "0b" out
 register :binary_literal, FlagRule.new("binary literal", :binary, "0b")

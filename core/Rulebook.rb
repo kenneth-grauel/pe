@@ -33,7 +33,7 @@ class Rulebook
   def apply_to_tokens(tokens)
     if Settings::RULEBOOK_VERBOSE
       puts "Apply to tokens: ".green_bold + self.to_s.green
-      puts "  Input: " + tokens.inspect.white
+      puts "  Input: " + tokens.to_s.white
     end
     
     total_substitutions = 0
@@ -42,7 +42,7 @@ class Rulebook
       total_substitutions += substitutions
       if Settings::RULEBOOK_VERBOSE and substitutions > 0
         puts ("  [" + substitutions.to_s + "] ").cyan_bold + rule.to_s.cyan
-        puts "      " + tokens.inspect.white
+        puts "      " + tokens.to_s.white
       end
     end
     

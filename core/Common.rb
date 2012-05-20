@@ -12,7 +12,7 @@ if $__common_once == nil
 
   # Global settings constants.
   module Settings
-    RULEBOOK_VERBOSE = true
+    RULEBOOK_VERBOSE = false
     TESTSUITE_DISPLAY_OK = true
     TESTSUITE_STOP_AT_ERROR = true
   end
@@ -24,6 +24,12 @@ if $__common_once == nil
     INTEGER = /^(|-)[0-9]+$/
     HEXADECIMAL = /^[0-9a-fA-F]+$/
     ALPHABET = /^[a-zA-Z]+$/
+  end
+  
+  class Array
+    def to_s()
+      "[" + join(", ") + "]"
+    end
   end
   
   $__common_once = true

@@ -86,6 +86,8 @@ class RubyContext < LanguageContext
       ["undefined", "undef"],
       ["of", "("],
       ["out", ")"],
+      ["at index", "["],
+      ["done", "]"],
       ["the empty string", "\"\""]
     ]
     
@@ -126,7 +128,8 @@ class RubyContext < LanguageContext
     concatenate_when = [
       @@left_grouping_operators.include?(left.text),
       @@right_grouping_operators.include?(right.text),
-      left.flagged?(:literal) && @@left_grouping_operators.include?(right.text),
+      (left.flagged?(:literal) || left.text == "]") && 
+        @@left_grouping_operators.include?(right.text),
       @@concatenating_operators.include?(left.text),
       @@concatenating_operators.include?(right.text),
       @@concatenating_on_left_operators.include?(right.text),
