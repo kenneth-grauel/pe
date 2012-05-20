@@ -147,11 +147,13 @@ class TestSuite
     pass = 0
     fail = 0
     tests.each do |test|
-      puts test.to_s(verbose, do_test)
+      result_text = test.to_s(verbose, do_test)
       if test.result
         pass += 1
+        puts result_text if Settings::TESTSUITE_DISPLAY_OK
       else
         fail += 1
+        puts result_text
         if Settings::TESTSUITE_STOP_AT_ERROR
           break
         end

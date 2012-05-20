@@ -26,6 +26,7 @@ class RubyContext < LanguageContext
     
     # Concatenations
     add_rules SharedRules.get(
+      :identifier_weird_endings,
       :hex_concatenation, :unary_minus_before_numeric,
       :underscores_within_integers, :with_exponent
     )
@@ -38,7 +39,7 @@ class RubyContext < LanguageContext
       ["plus equals", "+="],
       ["minus equals", "-="],
       ["times equals", "*="],
-      ["divided by equals", "/="],
+      ["divide equals", "/="],
       ["plus", "+"],
       ["minus", "-"],
       ["times", "*"],
@@ -48,17 +49,17 @@ class RubyContext < LanguageContext
       ["quotient", "/"],
       ["increment", "++"],
       ["decrement", "--"],
-      ["equals", "="],
       ["is equal to", "=="],
       ["is very equal to", "==="],
       ["compared to", "<=>"],
       ["matches", "=~"],
       ["does not match", "!~"],
+      ["is less than or equal to", "<="],
+      ["is greater than or equal to", ">="],
       ["is not equal to", "!="],
       ["is less than", "<"],
       ["is greater than", ">"],
-      ["is less than or equal to", "<="],
-      ["is greater than or equal to", ">="],
+      ["equals", "="],
       ["left shift", "<<"],
       ["right shift", ">>"],
       ["shift left", "<<"],
@@ -80,7 +81,10 @@ class RubyContext < LanguageContext
       ["or", "||"],
       ["else if", "elsif"],
       ["finish", "end"],
-      ["undefined", "undef"]
+      ["undefined", "undef"],
+      ["of", "("],
+      ["out", ")"],
+      ["the empty string", "\"\""]
     ]
     
     conversions.each do |conversion|
@@ -102,11 +106,32 @@ class RubyContext < LanguageContext
     add_rule SharedRules.get(:literal_concatenation)
   end
   
+  
+  # A list of regular expressions that should be processed as strings
+  # with unmodified, whitespace-preserved contents for this language.
   def string_matchers()
     [/"([^\\"]|\\"|\\)*"/]
   end
   
+  @@left_grouping_operators = ["(", "[", "{"]
+  @@right_grouping_operators = [")", "]", "}"]
+  @@concatenating_operators = [".", "::", "..", "..."]
+  @@concatenating_on_left_operators = ["++", "--", ",", ";", ":"]
+  @@concatenating_on_right_operators = ["@", "@@", "$", ":", "!"]
   
-  
+  # Should a space be inserted between the given Tokens?
+  def should_space(left, right)
+    concatenate_when = [
+      @@left_grouping_operators.include?(left.text),
+      @@right_grouping_operators.include?(right.text),
+      left.flagged?(:literal) && @@left_grouping_operators.include?(right.text),
+      @@concatenating_operators.include?(left.text),
+      @@concatenating_operators.include?(right.text),
+      @@concatenating_on_left_operators.include?(right.text),
+      @@concatenating_on_right_operators.include?(left.text)
+    ]
+    result = !concatenate_when.include?(true)
+    return result
+  end
   
 end

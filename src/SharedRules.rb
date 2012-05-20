@@ -73,7 +73,18 @@ module SharedRules
     [Token.new(text, flags)]
   }
   
-  register :hex_literal, FlagRule.new("hex literal", :hexadecimal, "0x")
+  register :hex_literal, ReplacementRule.new("hex literal")
+  rule.requires "hex"
+  rule.requires "literal"
+  rule.requires(Patterns::HEXADECIMAL)
+  rule.has_output lambda { |hex, literal, content|
+    text = "0x" + content.text.upcase
+    flags = Set.new(content.flags)
+    flags.add(:hexadecimal)
+    flags.add(:keep_capitals)
+    [Token.new(text, flags)]
+  }
+  
   register :binary_literal, FlagRule.new("binary literal", :binary, "0b")
   register :octal_literal, FlagRule.new("octal literal", :octal, "0")
   register :character_literal, FlagRule.new("character literal", :character, "?")
@@ -171,13 +182,19 @@ module SharedRules
     end
   }
   
+  register :identifier_weird_endings, ReplacementRule.new("identifier ?! endings")
+  rule.requires(Patterns::ANYTHING, literal: true)
+  rule.requires(/^\?|\!$/)
+  rule.has_output lambda { |identifier, weird_ending|
+    [Token.new(identifier.text + weird_ending.text, identifier.flags)]
+  }
   
   register :hex_concatenation, ReplacementRule.new("hexadecimal concatenation")
   rule.requires(Patterns::ANYTHING, hexadecimal: true)
   rule.requires(Patterns::HEXADECIMAL, reserved: false)
   rule.has_output lambda { |accumulator, right|
     flags = accumulator.flags
-    [Token.new(accumulator.text + right.text, flags)]
+    [Token.new(accumulator.text + right.text.upcase, flags)]
   }
 
   register :unary_minus_before_numeric, ReplacementRule.new("unary minus before numeric")

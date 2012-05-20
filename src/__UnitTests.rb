@@ -15,7 +15,7 @@
 1.24e-3
 # Hexadecimal notation
 #: hex literal 8abFF
-0x8abff
+0x8ABFF
 # Binary notation
 #: binary literal 01011
 0b01011
@@ -145,3 +145,57 @@ Somethingelse
 # All upper keyword in identifiers
 #: Singapore front all upper VC  source
 frontVCsource
+# Expressions (1)
+#: Count plus equals X divided by 2
+count += x / 2
+# Expressions (2)
+#: remaining tasks minus equals Sanskrit tasks. Complete count of nil out
+remaining_tasks -= Tasks.complete_count(nil)
+# Expressions (3)
+#: Draw factor times equals  upper settings with scope Byzantine draw factor multiplier
+draw_factor *= Settings::DRAW_FACTOR_MULTIPLIER
+# Expressions (4)
+#: member matrix at 123 divide equals member matrix at 123. Determine at 123 of out
+@mat /= @mat.det()
+# Expressions (5)
+#: upper math.squirt at 1256 of vertex.X exponent 2+ vertex.Y exponent 2 out
+Math.sqrt(vertex.x ** 2 + vertex.y ** 2)
+# Expressions (6)
+#: Contrast ratio minus ( static correction factor times member all upper correction)
+contrast_ratio - (@@correction_factor * @CORRECTION)
+# Expressions (7)
+#: cycle equals (cycle +1)modulo100
+cycle = (cycle + 1) % 100
+# Expressions (8)
+#: confusing equals something increment plus something literally else decrement
+confusing = something++ + something_else--
+# Expressions (9)
+#: self is equal to other
+self == other
+# Expressions (10)
+#: input context is very equal to upper string
+input_context === String
+# Expressions (11)
+#: (member text compared to other.text) is equal to 0
+(@text <=> other.text) == 0
+# Expressions (12)
+#: thing matches  Singapore regular at 123 expression at 123 and thing does not match Singapore other_regular at 123  Expression at 123
+thing =~ regexp && thing !~ other_regexp
+# Expressions (13)
+#: member location. Distance of actor out is less than near or member location. Distance of actor out is greater than far
+@location.distance(actor) < near || @location.distance(actor) > far
+# Expressions (14)
+#: Sanskrit token. Text is not equal to the empty string
+Token.text != ""
+# Expressions (15)
+#: bound is greater than or equal to 0 and bound is less than or equal to 100
+bound >= 0 && bound <= 100
+# Expressions (16)
+#: (red shift left 16) plus (Green left shift 8) plus blue
+(red << 16) + (green << 8) + blue
+# Expressions (17)
+#: [(red shift right 16) binary and hex literal FF, (green shift right 8) binary and hex literal FF, blue binary and hex literal FF]
+[(red >> 16) & 0xFF, (green >> 8) & 0xFF, blue & 0xFF]
+# Expressions (18)
+#: (1 inclusive range 100).includes? Of 50 out and (1 exclusive range 100).includes? Of 50 out
+(1..100).includes?(50) && (1...100).includes?(50)

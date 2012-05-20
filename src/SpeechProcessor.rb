@@ -97,7 +97,7 @@ module SpeechProcessor
     tokens
   end
   
-  def self.tokens_to_string(tokens)
+  def self.tokens_to_string(tokens, language_context)
     if tokens.count <= 0
       return ""
     end
@@ -114,26 +114,8 @@ module SpeechProcessor
     
     for index in 1...tokens.count
       current = tokens[index]
-      should_space = true
-      
-      if current.text =~ /^[\)\]\}]$/
-        should_space = false
-      elsif previous.text =~ /^[\(\[\{]$/
-        should_space = false
-      elsif previous.flagged?(:literal) && current.text =~ /^[\(\[\{]$/
-        should_space = false
-      elsif previous.text == "." || current.text == "."
-        should_space = false
-      elsif previous.text =~ /^(\@|\@\@|\$|\:)$/ && current.flagged?(:literal)
-        should_space = false
-      elsif current.text =~ /^[\,\;\:]$/
-        should_space = false
-      elsif previous.text == "!"
-        should_space = false
-      end
-      # TODO:  Handle unary minus
-      
-      if should_space
+
+      if language_context.should_space(previous, current)
         result << " "
       end
       
@@ -164,6 +146,6 @@ module SpeechProcessor
       substitutions, tokens = rulebook.apply_to_tokens(tokens)
       total_substitutions += substitutions
     end
-    return tokens_to_string(tokens)
+    return tokens_to_string(tokens, language_context)
   end
 end

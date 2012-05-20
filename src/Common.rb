@@ -13,6 +13,7 @@ if $__common_once == nil
   # Global settings constants.
   module Settings
     RULEBOOK_VERBOSE = true
+    TESTSUITE_DISPLAY_OK = true
     TESTSUITE_STOP_AT_ERROR = true
   end
 

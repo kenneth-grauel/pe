@@ -34,6 +34,11 @@ class LanguageContext
   def string_matchers()
     []
   end
+  
+  # Should a space be inserted between the given Tokens?
+  def should_space(left, right)
+    true
+  end
 end
 
 
