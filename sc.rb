@@ -1,7 +1,7 @@
 
 require "ripper"
 
-files = `find . | grep ".*\\.rb$"`
+files = `find . | egrep "^\\.\\/[^\\.]*(\\.rb|\\.java)$"`
 files = files.split("\n")
 
 token_total = 0
@@ -9,8 +9,8 @@ line_total = 0
 byte_total = 0
 
 puts ""
-puts "  File                           | Lines | Tokens |   Chars | "
-puts "---------------------------------+-------+--------+---------+-"
+puts "  File                                          | Lines | Tokens |   Chars | "
+puts "------------------------------------------------+-------+--------+---------+-"
 files.each do |filename|
   File.open(filename, "rb") do |file|
     contents = file.read
@@ -23,10 +23,10 @@ files.each do |filename|
     token_total += t
     line_total += l
     byte_total += b
-    puts "  %-30s | %5d | %6d | %7d |" % [filename[2,filename.length-2], l.to_s, t.to_s, b.to_s]
+    puts "  %-45s | %5d | %6d | %7d |" % [filename[2,filename.length-2], l.to_s, t.to_s, b.to_s]
   end
 end
-puts "---------------------------------+-------+--------+---------+-"
-puts "  TOTAL                          | " + ("%5d | %6d | %7d |" % [line_total, token_total, byte_total])
+puts "------------------------------------------------+-------+--------+---------+-"
+puts "  TOTAL                                         | " + ("%5d | %6d | %7d |" % [line_total, token_total, byte_total])
 puts
 
