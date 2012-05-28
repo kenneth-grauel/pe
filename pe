@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd src
+cd core
 ruby __RunTests.rb
 
 cd ..
